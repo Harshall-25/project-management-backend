@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const objectid = mongoose.Types.ObjectId;
 
 const userSchema = new Schema({
     name : String,
@@ -14,17 +13,19 @@ const userSchema = new Schema({
 })
 
 const projectSchema = new Schema({
-    title : String,
+    title : {type: String, required: true},
     description :  String,
+    owner: {type:mongoose.Schema.Types.ObjectId, ref:"User"},
+    members : [{type : mongoose.Schema.Types.ObjectId, ref: "User"}]
+});
 
-    owner: {type:mongoose.Schema.Types.ObjectId, ref:"userSchema"},
-    members : {type : mongoose.Schema.Types.ObjectId, ref: "userSchema"}
-})
+// Prevent duplicate project titles for the same owner
+projectSchema.index({ title: 1, owner: 1 }, { unique: true });
 
 
 const taskSchema = new Schema({
     title : String,
-    
+
     description : String,
 
     status: {
@@ -38,16 +39,19 @@ const taskSchema = new Schema({
          enum:['low','high','medium'],
           default:"medium",index:true
     },
+    createdby : {type :mongoose.Schema.Types.ObjectId,
+        ref : "User"
+    },
 
     project:{
         type: mongoose.Schema.Types.ObjectId,
-        ref :  "projectSchema",
+        ref :  "Project",
         index : true
     },
 
     assignedto :{
         type : mongoose.Schema.Types.ObjectId,
-        ref : "userSchema",
+        ref : "User",
         index : true
     },
 
