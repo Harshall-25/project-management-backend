@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const app = express();
 const {authRouter} = require('./routes/auth');
 const {projectRouter} = require('./routes/project');
@@ -15,4 +16,4 @@ app.use('/api/v1',taskRouter);
 
 app.listen(3000, () =>{
     console.log('Server is running on port 3000');
-})
+});

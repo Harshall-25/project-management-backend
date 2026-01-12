@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const z = require('zod');
 const authRouter = express.Router();
-const {JWT_KEY} = require('../middlewares/authmiddleware')
+const JWT_KEY = process.env.JWT_KEY || "Key";
 
 const signupSchema = z.object({
     name: z.string().min(1),
@@ -91,7 +91,7 @@ authRouter.post('/signin',async function(req,res){
         const token = jwt.sign({
             id : user._id.toString(),
             role : user.role
-        },JWT_KEY);
+        }, JWT_KEY);
 
         res.status(200).json({
             success : true,
